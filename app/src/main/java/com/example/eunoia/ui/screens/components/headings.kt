@@ -1,5 +1,7 @@
 package com.example.eunoia.ui.components
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -7,8 +9,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
-// Heading Component
 @Composable
 fun HeadingText(
     text: String,
@@ -17,16 +20,15 @@ fun HeadingText(
 ) {
     Text(
         text = text,
-        modifier = modifier,
+        modifier = modifier.padding(start = 25.dp, end = 25.dp),
         style = TextStyle(
-            fontSize = 24.sp, // Customize the size
-            fontWeight = FontWeight.Bold // Customize the weight
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold
         ),
         textAlign = textAlign
     )
 }
 
-// Subheading Component
 @Composable
 fun SubheadingText(
     text: String,
@@ -35,11 +37,50 @@ fun SubheadingText(
 ) {
     Text(
         text = text,
-        modifier = modifier,
+        modifier = modifier.padding(start = 25.dp, end = 25.dp),
         style = TextStyle(
-            fontSize = 18.sp, // Customize the size
-            fontWeight = FontWeight.Medium // Customize the weight
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
         ),
         textAlign = textAlign
     )
+}
+
+@Composable
+fun BoldText(
+    text: String,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = TextStyle(
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold
+        ),
+        textAlign = textAlign
+    )
+}
+
+@Composable
+fun Text(
+    text: String,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = TextStyle(
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        textAlign = textAlign
+    )
+}
+
+@Composable
+fun VerticalSpacer(space: Dp) {
+    Spacer(modifier = Modifier.padding(vertical = space))
 }
