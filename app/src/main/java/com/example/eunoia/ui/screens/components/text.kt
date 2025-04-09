@@ -10,7 +10,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun HeadingText(
@@ -20,7 +19,7 @@ fun HeadingText(
 ) {
     Text(
         text = text,
-        modifier = modifier.padding(start = 25.dp, end = 25.dp),
+        modifier = modifier,
         style = TextStyle(
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold
@@ -37,7 +36,7 @@ fun SubheadingText(
 ) {
     Text(
         text = text,
-        modifier = modifier.padding(start = 25.dp, end = 25.dp),
+        modifier = modifier,
         style = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -83,4 +82,9 @@ fun Text(
 @Composable
 fun VerticalSpacer(space: Dp) {
     Spacer(modifier = Modifier.padding(vertical = space))
+}
+
+@Composable
+fun HorizontalSpacer(space: Dp) {
+    Spacer(modifier = Modifier.padding(horizontal = space))
 }

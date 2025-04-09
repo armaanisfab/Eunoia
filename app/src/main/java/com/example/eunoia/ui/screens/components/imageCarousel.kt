@@ -3,7 +3,6 @@ package com.example.eunoia.ui.screens.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,24 +16,15 @@ import androidx.compose.ui.util.lerp
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import com.example.eunoia.R
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ImageCarousel(
+    imageResources: List<Int>, // Accepts a list of images
     modifier: Modifier = Modifier
 ) {
-    val imageResources = listOf(
-        R.drawable.quote1,
-        R.drawable.quote2,
-        R.drawable.quote3,
-        R.drawable.quote4
-    )
-
     val pagerState = rememberPagerState { imageResources.size }
 
     Column(
@@ -45,8 +35,7 @@ fun ImageCarousel(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
-            pageSpacing = 10.dp,
-            contentPadding = PaddingValues(horizontal = 25.dp)
+            pageSpacing = 10.dp
         ) { pageIndex ->
             Image(
                 painter = painterResource(id = imageResources[pageIndex]),

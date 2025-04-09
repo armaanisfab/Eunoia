@@ -8,10 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.eunoia.ui.screens.Routes
+import com.example.eunoia.ui.theme.ThemePurple1
+import com.example.eunoia.ui.theme.ThemePurple2
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    NavigationBar {
+    NavigationBar(
+        containerColor = ThemePurple1
+    ) {
         val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
         Routes.allRoutes.forEach { route ->
             NavigationBarItem(
@@ -24,7 +28,10 @@ fun BottomNavigationBar(navController: NavController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
+                colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                    indicatorColor = ThemePurple2
+                )
             )
         }
     }
