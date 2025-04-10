@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
 import com.example.eunoia.ui.components.icon_heading_subheading
 import com.example.eunoia.ui.components.HeadingText
@@ -17,7 +19,7 @@ import com.example.eunoia.ui.theme.space1
 import com.example.eunoia.ui.theme.space2
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,27 +41,21 @@ fun HomeScreen() {
             heading = "Log your mood",
             subheading = "How are you feeling today?",
             iconResId = R.drawable.smile_icon,
-            onClick = {
-                println("Card clicked!")
-            }
+            onClick = { navController.navigate(Routes.Mood.route) }
         )
         VerticalSpacer(space = space2.dp)
         icon_heading_subheading(
             heading = "Pen your journal",
             subheading = "What's on your mind?",
             iconResId = R.drawable.pen_icon,
-            onClick = {
-                println("Card clicked!")
-            }
+            onClick = { navController.navigate(Routes.Journal.route) }
         )
         VerticalSpacer(space = space2.dp)
         icon_heading_subheading(
             heading = "Explore personalized AI insights",
             subheading = "Advice from your wellness coach",
             iconResId = R.drawable.chat_icon,
-            onClick = {
-                println("Card clicked!")
-            }
+            onClick = { navController.navigate(Routes.Insights.route) }
         )
         VerticalSpacer(space = space1.dp)
         SubheadingText(text = "Take a breather")
@@ -68,9 +64,7 @@ fun HomeScreen() {
             heading = "Meditate",
             subheading = "Start a relaxing meditation audio",
             iconResId = R.drawable.shield_icon,
-            onClick = {
-                println("Card clicked!")
-            }
+            onClick = { navController.navigate(Routes.Meditation.route) }
         )
     }
 }
@@ -78,5 +72,6 @@ fun HomeScreen() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeScreen() {
-    HomeScreen()
+    val mockNavController = rememberNavController()
+    HomeScreen(navController = mockNavController)
 }

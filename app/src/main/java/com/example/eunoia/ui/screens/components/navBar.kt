@@ -13,11 +13,14 @@ import com.example.eunoia.ui.theme.ThemePurple2
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
+    // Filter only main routes for bottom navigation
+    val mainRoutes = listOf(Routes.Home, Routes.Progress, Routes.Me)
+
     NavigationBar(
         containerColor = ThemePurple1
     ) {
         val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
-        Routes.allRoutes.forEach { route ->
+        mainRoutes.forEach { route ->
             NavigationBarItem(
                 icon = { Icon(imageVector = route.icon, contentDescription = route.title) },
                 label = { Text(text = route.title) },
