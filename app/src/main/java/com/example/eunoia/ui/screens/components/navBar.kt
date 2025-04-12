@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.screens.Routes
 import com.example.eunoia.ui.theme.ThemePurple1
 import com.example.eunoia.ui.theme.ThemePurple2
@@ -23,7 +24,7 @@ fun BottomNavigationBar(navController: NavController) {
         mainRoutes.forEach { route ->
             NavigationBarItem(
                 icon = { Icon(imageVector = route.icon, contentDescription = route.title) },
-                label = { Text(text = route.title) },
+                label = { NormalText(text = route.title) },
                 selected = currentRoute == route.route,
                 onClick = {
                     navController.navigate(route.route) {

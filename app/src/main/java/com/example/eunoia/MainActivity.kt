@@ -57,8 +57,8 @@ fun EunoiaScaffold() {
             composable(Routes.Me.route) { MeScreen() }
 
             // Auxiliary pages
-            composable(Routes.Mood.route) { MoodScreen() }
-            composable(Routes.Journal.route) { JournalScreen() }
+            composable(Routes.Mood.route) { MoodScreen(navController = navController) }
+            composable(Routes.Journal.route) { JournalScreen(navController = navController) }
             composable(Routes.Insights.route) { InsightsScreen() }
             composable(Routes.Meditation.route) { MeditationScreen() }
         }

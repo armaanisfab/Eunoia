@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
@@ -15,14 +16,16 @@ import androidx.compose.ui.unit.Dp
 fun HeadingText(
     text: String,
     modifier: Modifier = Modifier,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = Color.Black
 ) {
     Text(
         text = text,
         modifier = modifier,
         style = TextStyle(
             fontSize = 30.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = color
         ),
         textAlign = textAlign
     )
@@ -32,14 +35,16 @@ fun HeadingText(
 fun SubheadingText(
     text: String,
     modifier: Modifier = Modifier,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = Color.Black
 ) {
     Text(
         text = text,
         modifier = modifier,
         style = TextStyle(
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = color
         ),
         textAlign = textAlign
     )
@@ -49,31 +54,35 @@ fun SubheadingText(
 fun BoldText(
     text: String,
     modifier: Modifier = Modifier,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = Color.Black
 ) {
     Text(
         text = text,
         modifier = modifier,
         style = TextStyle(
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = color
         ),
         textAlign = textAlign
     )
 }
 
 @Composable
-fun Text(
+fun NormalText(
     text: String,
     modifier: Modifier = Modifier,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = Color.Black
 ) {
     Text(
         text = text,
         modifier = modifier,
         style = TextStyle(
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Normal
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal,
+            color = color
         ),
         textAlign = textAlign
     )
