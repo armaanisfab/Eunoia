@@ -11,6 +11,7 @@ sealed class Routes(val route: String, val title: String, val icon: ImageVector)
     object Home : Routes("home", "Home", Icons.Filled.Home)
     object Progress : Routes("progress", "Progress", Icons.Filled.CheckCircle)
     object Me : Routes("me", "Me", Icons.Filled.Person)
+    object Login : Routes("login", "Login", Icons.Filled.CheckBoxOutlineBlank)
     object Mood : Routes("mood", "Mood", Icons.Filled.CheckBoxOutlineBlank)
     object Journal : Routes("journal", "Journal", Icons.Filled.CheckBoxOutlineBlank)
     object Insights : Routes("insights", "Insights", Icons.Filled.CheckBoxOutlineBlank)
@@ -18,6 +19,6 @@ sealed class Routes(val route: String, val title: String, val icon: ImageVector)
 
     // Update `allRoutes` to include the new routes:
     companion object {
-        val allRoutes = listOf(Home, Progress, Me, Mood, Journal, Insights, Meditation)
+        val allRoutes = listOf(Home, Progress, Me, Login, Mood, Journal, Insights, Meditation)
     }
 }

@@ -15,6 +15,7 @@ import com.example.eunoia.ui.screens.components.BottomNavigationBar
 import com.example.eunoia.ui.screens.HomeScreen
 import com.example.eunoia.ui.screens.InsightsScreen
 import com.example.eunoia.ui.screens.JournalScreen
+import com.example.eunoia.ui.screens.LoginScreen
 import com.example.eunoia.ui.screens.MeScreen
 import com.example.eunoia.ui.screens.MeditationScreen
 import com.example.eunoia.ui.screens.MoodScreen
@@ -48,19 +49,20 @@ fun EunoiaScaffold() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Routes.Home.route,
+            startDestination = Routes.Login.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // Main pages
+            composable(Routes.Login.route) { LoginScreen(navController = navController) }
             composable(Routes.Home.route) { HomeScreen(navController = navController) }
             composable(Routes.Progress.route) { ProgressScreen() }
-            composable(Routes.Me.route) { MeScreen() }
+            composable(Routes.Me.route) { MeScreen(navController = navController) }
 
             // Auxiliary pages
             composable(Routes.Mood.route) { MoodScreen(navController = navController) }
             composable(Routes.Journal.route) { JournalScreen(navController = navController) }
-            composable(Routes.Insights.route) { InsightsScreen() }
-            composable(Routes.Meditation.route) { MeditationScreen() }
+            composable(Routes.Insights.route) { InsightsScreen(navController = navController) }
+            composable(Routes.Meditation.route) { MeditationScreen(navController = navController) }
         }
     }
 }
