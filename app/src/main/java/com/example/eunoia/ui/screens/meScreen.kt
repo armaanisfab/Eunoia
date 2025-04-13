@@ -65,15 +65,15 @@ fun MeScreen(navController: NavController) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
                 title = { Text("Delete account?") },
-                text = { Text("Are you sure? This cannot be undone") },
+                text = { Text("Are you sure? This cannot be undone.") },
                 confirmButton = {
                     Button(
                         onClick = {
                             navController.navigate(Routes.Login.route)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent, // Transparent background
-                            contentColor = Color.Red           // Keep text color red
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Red
                         )
                     ) {
                         Text("YES, DELETE")
@@ -83,8 +83,8 @@ fun MeScreen(navController: NavController) {
                     Button(
                         onClick = { showDialog = false },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent, // Transparent background
-                            contentColor = Color.Black          // Standard text color
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Black
                         )
                     ) {
                         Text("NO, CANCEL")
