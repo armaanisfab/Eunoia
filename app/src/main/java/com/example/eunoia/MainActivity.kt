@@ -22,7 +22,9 @@ import com.example.eunoia.ui.screens.MoodScreen
 import com.example.eunoia.ui.screens.ProgressScreen
 import com.example.eunoia.ui.screens.Routes
 import com.example.eunoia.ui.theme.EunoiaTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
