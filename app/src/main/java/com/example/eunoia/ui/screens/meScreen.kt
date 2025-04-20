@@ -1,12 +1,17 @@
 package com.example.eunoia.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,9 +24,15 @@ import com.example.eunoia.ui.components.VerticalSpacer
 import com.example.eunoia.ui.components.icon_heading_subheading
 import com.example.eunoia.ui.theme.space1
 import com.example.eunoia.ui.theme.space2
+import com.example.eunoia.viewmodel.UserViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MeScreen(navController: NavController) {
+    val viewModel: UserViewModel = hiltViewModel()
+    val users by viewModel.usersLiveData.observeAsState(initial = emptyList())
+
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -43,7 +54,21 @@ fun MeScreen(navController: NavController) {
         )
         VerticalSpacer(space = space2.dp)
 
-        // Delete account card
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(users) { user ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(text = "Name: ${user.displayName}", modifier = Modifier.padding(4.dp))
+                    Text(text = "Email: ${user.email}", modifier = Modifier.padding(4.dp))
+                }
+            }
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,6 +120,7 @@ fun MeScreen(navController: NavController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewMeScreen() {

@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun EunoiaScaffold() {
     val navController = rememberNavController()
-    val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
         bottomBar = {

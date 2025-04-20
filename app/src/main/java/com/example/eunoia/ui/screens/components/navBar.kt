@@ -20,7 +20,7 @@ fun BottomNavigationBar(navController: NavController) {
     NavigationBar(
         containerColor = ThemePurple1
     ) {
-        val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
+        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
         mainRoutes.forEach { route ->
             NavigationBarItem(
                 icon = { Icon(imageVector = route.icon, contentDescription = route.title) },
