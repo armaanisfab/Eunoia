@@ -24,15 +24,13 @@ import com.example.eunoia.ui.components.VerticalSpacer
 import com.example.eunoia.ui.components.icon_heading_subheading
 import com.example.eunoia.ui.theme.space1
 import com.example.eunoia.ui.theme.space2
-import com.example.eunoia.viewmodel.UserViewModel
+import com.example.eunoia.feature.user.data.presentation.viewmodel.UserViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.eunoia.feature.user.data.presentation.viewmodel.UserScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MeScreen(navController: NavController) {
-    val viewModel: UserViewModel = hiltViewModel()
-    val users by viewModel.usersLiveData.observeAsState(initial = emptyList())
-
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -54,20 +52,7 @@ fun MeScreen(navController: NavController) {
         )
         VerticalSpacer(space = space2.dp)
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(users) { user ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                ) {
-                    Text(text = "Name: ${user.displayName}", modifier = Modifier.padding(4.dp))
-                    Text(text = "Email: ${user.email}", modifier = Modifier.padding(4.dp))
-                }
-            }
-        }
+        UserScreen()
 
         Box(
             modifier = Modifier

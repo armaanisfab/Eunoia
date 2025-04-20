@@ -1,2 +1,2 @@
-SUPABASE_URL=helloarmaan
-SUPABASE_API_KEY=dontforgettocopythisfile
+SUPABASE_URL="helloarmaan"
+SUPABASE_API_KEY="dontforgettocopythisfile"

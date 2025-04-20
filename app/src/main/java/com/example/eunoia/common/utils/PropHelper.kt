@@ -21,7 +21,7 @@ object PropHelper {
 
     fun getSupabaseKeys(context: Context): Pair<String, String> {
         val properties = loadProperties(context)
-        val url = properties.getProperty("SUPABASE_URL", "")
+        val url = properties.getProperty("SUPABASE_URL", "http://127.0.0.1:54321")
         val apiKey = properties.getProperty("SUPABASE_API_KEY", "")
         return Pair(url, apiKey)
     }
