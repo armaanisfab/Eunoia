@@ -1,4 +1,4 @@
-package com.example.eunoia.feature.user.data.presentation.viewmodel
+package com.example.eunoia.feature.user.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
