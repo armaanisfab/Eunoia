@@ -11,7 +11,7 @@ class UserService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
     suspend fun fetchUsers(): List<User> = withContext(Dispatchers.IO) {
-        supabaseClient.from("users")
+        supabaseClient.from("User")
             .select()
             .decodeList<User>()
     }
