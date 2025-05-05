@@ -3,3 +3,4 @@
 *.properties
 .kotlin
 *.db
+.direnv
