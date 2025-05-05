@@ -1,0 +1,40 @@
+package com.example.eunoia.feature.auth.data.local
+
+import android.content.Context
+import android.content.SharedPreferences
+import com.example.eunoia.feature.auth.data.model.AuthSession
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+
+class SessionManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+
+    companion object {
+        private const val KEY_ACCESS_TOKEN = "key_access_token"
+        private const val KEY_REFRESH_TOKEN = "key_refresh_token"
+    }
+
+    fun saveSession(accessToken: String, refreshToken: String) {
+        prefs.edit().apply {
+            putString(KEY_ACCESS_TOKEN, accessToken)
+            putString(KEY_REFRESH_TOKEN, refreshToken)
+            apply()
+        }
+    }
+
+    fun getSession(): AuthSession? {
+        val accessToken = prefs.getString(KEY_ACCESS_TOKEN, null)
+        val refreshToken = prefs.getString(KEY_REFRESH_TOKEN, null)
+        return if (accessToken != null && refreshToken != null) {
+            AuthSession(accessToken, refreshToken)
+        } else null
+    }
+
+    fun clearSession() {
+        prefs.edit().clear().apply()
+    }
+}

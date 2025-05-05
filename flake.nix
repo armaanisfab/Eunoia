@@ -18,6 +18,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         packages = with pkgs; [ 
                     kotlin-language-server
+                    supabase-cli
                 ];
             in
                 {

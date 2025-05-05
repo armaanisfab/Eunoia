@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     implementation(platform(libs.supabase.bom))
+    implementation(libs.auth.kt)
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.ktor.client.android)
 

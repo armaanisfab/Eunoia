@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import javax.inject.Singleton
@@ -20,10 +21,10 @@ object SupabaseModule {
     @Singleton
     fun provideSupabaseClient(@ApplicationContext context: Context): SupabaseClient {
         val (supabaseUrl, supabaseApiKey) = PropHelper.getSupabaseKeys(context)
-        return createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseApiKey) {
+        return createSupabaseClient(supabaseUrl = supabaseUrl, supabaseKey = supabaseApiKey)
+        {
                 this.install(Postgrest)
+                this.install(Auth)
         }
     }
 }
