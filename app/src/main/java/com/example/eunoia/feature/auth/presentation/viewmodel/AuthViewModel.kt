@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.eunoia.feature.auth.data.model.AuthSession
 import com.example.eunoia.feature.auth.data.model.AuthState
 import com.example.eunoia.feature.auth.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ class AuthViewModel @Inject constructor(
 
     private fun checkExistingSession() {
         viewModelScope.launch {
-            val session = authRepository.getSession()
+            val session: AuthSession? = authRepository.getSession()
             _userState.value = if (session != null) {
                 AuthState.Authenticated(session)
             } else {
@@ -37,7 +38,7 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _userState.value = AuthState.Loading
             try {
-                val session = authRepository.signUp(email, password)
+                val session: AuthSession? = authRepository.signUp(email, password)
                 _userState.value = if (session != null) {
                     AuthState.Authenticated(session)
                 } else {
@@ -53,7 +54,7 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _userState.value = AuthState.Loading
             try {
-                val session = authRepository.signIn(email, password)
+                val session: AuthSession? = authRepository.signIn(email, password)
                 _userState.value = if (session != null) {
                     AuthState.Authenticated(session)
                 } else {

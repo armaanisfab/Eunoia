@@ -11,8 +11,7 @@ class JournalService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
     suspend fun fetchUserJournal(userId: String): Journal? = withContext(Dispatchers.IO) {
-        // todo: why the hell did i capitalize my table names? why are they singular? lmao
-        supabaseClient.from("Journal")
+        supabaseClient.from("journal")
             .select(){
                 filter {
                     Journal::userId eq userId
@@ -23,13 +22,13 @@ class JournalService @Inject constructor(
     }
 
     suspend fun createJournal(journal: Journal): Journal? = withContext(Dispatchers.IO) {
-        supabaseClient.from("Journal")
+        supabaseClient.from("journal")
             .insert(journal)
             .decodeSingleOrNull()
     }
 
     suspend fun updateJournal(journal: Journal): Journal? = withContext(Dispatchers.IO) {
-        supabaseClient.from("Journal")
+        supabaseClient.from("journal")
             .update(journal) {
                 filter {
                     Journal::id eq journal.id

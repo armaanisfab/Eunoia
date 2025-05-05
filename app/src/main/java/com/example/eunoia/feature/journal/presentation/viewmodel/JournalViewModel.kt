@@ -42,11 +42,11 @@ class JournalViewModel @Inject constructor(
         }
     }
 
-    fun createJournalEntry(entry: JournalEntry) {
+    fun createJournalEntry(content: String, journalId: String) {
         viewModelScope.launch {
-            val newEntry = journalEntryRepository.createJournalEntry(entry)
-            if (newEntry != null) {
-                _entriesState.value += newEntry
+            val createdEntry = journalEntryRepository.createJournalEntry(content, journalId)
+            if (createdEntry != null) {
+                _entriesState.value += createdEntry
             }
         }
     }

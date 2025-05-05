@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.eunoia.feature.journal.data.model.JournalEntry
 import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
 import com.example.eunoia.ui.components.HeadingText
 import com.example.eunoia.ui.components.VerticalSpacer
@@ -35,11 +34,10 @@ import com.example.eunoia.ui.theme.ThemePurple1
 import com.example.eunoia.ui.theme.ThemePurple2
 import com.example.eunoia.ui.theme.ThemePurple3
 import com.example.eunoia.ui.theme.space2
-import java.util.UUID
 
 @Composable
 fun JournalScreen(navController: NavController, journalViewModel: JournalViewModel = hiltViewModel()) {
-    val userId = "c1e52b35-abba-4de2-af99-6d16ca88be2c";
+    val userId = "225e9d54-ae0c-4568-aad8-dbd9dabf362e";
 
     LaunchedEffect(key1 = Unit) {
         journalViewModel.fetchOrCreateUserJournal(userId)
@@ -99,12 +97,7 @@ fun JournalScreen(navController: NavController, journalViewModel: JournalViewMod
                     val journalId = journalViewModel.journalState.value?.id ?: ""
                     if (journalId.isNotEmpty() && textFieldValue.isNotBlank()) {
                         journalViewModel.createJournalEntry(
-                            JournalEntry(
-                                id = UUID.randomUUID().toString(),
-                                journalId = journalId,
-                                entryDate = System.currentTimeMillis().toString(),
-                                content = textFieldValue
-                            )
+                            textFieldValue, journalId
                         )
                         textFieldValue = ""
                     }

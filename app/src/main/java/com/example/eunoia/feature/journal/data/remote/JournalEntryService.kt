@@ -11,8 +11,8 @@ class JournalEntryService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
     suspend fun fetchJournalEntries(journalId: String): List<JournalEntry> = withContext(Dispatchers.IO) {
-        supabaseClient.from("JournalEntry")
-            .select() {
+        supabaseClient.from("entry")
+            .select {
                 filter {
                     JournalEntry::journalId eq journalId
                 }
@@ -21,13 +21,16 @@ class JournalEntryService @Inject constructor(
     }
 
     suspend fun createJournalEntry(entry: JournalEntry): JournalEntry? = withContext(Dispatchers.IO) {
-        supabaseClient.from("JournalEntry")
-            .insert(entry)
-            .decodeSingleOrNull()
+        supabaseClient.from("entry")
+            .insert(entry) {
+                select()
+            }
+            .decodeSingleOrNull<JournalEntry>()
     }
 
+    // dear future ooj: figure out why journal can pass an empty id but entry cannot
     suspend fun updateJournalEntry(entry: JournalEntry): JournalEntry? = withContext(Dispatchers.IO) {
-        supabaseClient.from("JournalEntry")
+        supabaseClient.from("entry")
             .update(entry) {
                 filter {
                     JournalEntry::id eq entry.id

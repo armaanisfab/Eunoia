@@ -1,25 +1,64 @@
 package com.example.eunoia.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
-import com.example.eunoia.ui.components.icon_heading_subheading
+import com.example.eunoia.feature.profile.presentation.viewmodel.ProfileViewModel
 import com.example.eunoia.ui.components.HeadingText
 import com.example.eunoia.ui.components.SubheadingText
 import com.example.eunoia.ui.components.VerticalSpacer
+import com.example.eunoia.ui.components.icon_heading_subheading
 import com.example.eunoia.ui.screens.components.ImageCarousel
 import com.example.eunoia.ui.theme.space1
 import com.example.eunoia.ui.theme.space2
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+   profileViewModel: ProfileViewModel = hiltViewModel()
+) {
+    val profile by profileViewModel.profileState.collectAsState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (profile == null) {
+            CircularProgressIndicator()
+        } else {
+            Text(
+                text = "User ID: ${profile!!.id}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = "Username: ${profile!!.username}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = "Email: ${profile!!.email}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

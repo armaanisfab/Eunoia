@@ -3,6 +3,7 @@ package com.example.eunoia.feature.auth.data.repository
 import com.example.eunoia.feature.auth.data.local.SessionManager
 import com.example.eunoia.feature.auth.data.model.AuthSession
 import com.example.eunoia.feature.auth.data.remote.AuthService
+import com.example.eunoia.feature.profile.data.model.AuthUser
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -12,7 +13,7 @@ class AuthRepository @Inject constructor(
     suspend fun signUp(email: String, password: String): AuthSession? {
         val session = authService.signUp(email, password)
         session?.let {
-            sessionManager.saveSession(it.accessToken, it.refreshToken)
+            sessionManager.saveSession(it.userId, it.accessToken, it.refreshToken)
         }
         return session
     }
@@ -20,7 +21,7 @@ class AuthRepository @Inject constructor(
     suspend fun signIn(email: String, password: String): AuthSession? {
         val session = authService.signIn(email, password)
         session?.let {
-            sessionManager.saveSession(it.accessToken, it.refreshToken)
+            sessionManager.saveSession(it.userId, it.accessToken, it.refreshToken)
         }
         return session
     }
@@ -35,5 +36,18 @@ class AuthRepository @Inject constructor(
 
     fun getSession(): AuthSession? {
         return sessionManager.getSession()
+    }
+
+    suspend fun getUserDetails(userId: String): AuthUser? {
+        val authUser = authService.getUserDetails(userId)
+        return if (authUser?.id == userId) {
+            AuthUser(
+                userId = authUser.id,
+                email = authUser.email ?: "peepee",
+                username = (authUser.userMetadata?.get("username") ?: "armaanisfab").toString(),
+            )
+        } else {
+            null
+        }
     }
 }

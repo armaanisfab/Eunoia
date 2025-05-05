@@ -11,7 +11,7 @@ class StreakService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
     suspend fun fetchStreak(moodLogId: String): Streak? = withContext(Dispatchers.IO) {
-        supabaseClient.from("Streak")
+        supabaseClient.from("streak")
             .select() {
                 filter {
                     Streak::moodLogId eq moodLogId
@@ -22,13 +22,13 @@ class StreakService @Inject constructor(
     }
 
     suspend fun createStreak(streak: Streak): Streak? = withContext(Dispatchers.IO) {
-        supabaseClient.from("Streak")
+        supabaseClient.from("streak")
             .insert(streak)
             .decodeSingleOrNull()
     }
 
     suspend fun updateStreak(streak: Streak): Streak? = withContext(Dispatchers.IO) {
-        supabaseClient.from("Streak")
+        supabaseClient.from("streak")
             .update(streak) {
                 filter {
                     Streak::id eq streak.id

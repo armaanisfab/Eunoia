@@ -11,7 +11,7 @@ class MoodLogService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
     suspend fun fetchMoodLogs(journalId: String): List<MoodLog> = withContext(Dispatchers.IO) {
-        supabaseClient.from("MoodLog")
+        supabaseClient.from("mood")
             .select() {
                 filter {
                     MoodLog::journalId eq journalId
@@ -21,13 +21,13 @@ class MoodLogService @Inject constructor(
     }
 
     suspend fun createMoodLog(moodLog: MoodLog): MoodLog? = withContext(Dispatchers.IO) {
-        supabaseClient.from("MoodLog")
+        supabaseClient.from("mood")
             .insert(moodLog)
             .decodeSingleOrNull()
     }
 
     suspend fun updateMoodLog(moodLog: MoodLog): MoodLog? = withContext(Dispatchers.IO) {
-        supabaseClient.from("MoodLog")
+        supabaseClient.from("mood")
             .update(moodLog){
                 filter {
                     MoodLog::id eq moodLog.id

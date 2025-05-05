@@ -14,12 +14,14 @@ class SessionManager @Inject constructor(
         context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
     companion object {
+        private const val USER_ID = "user_id"
         private const val KEY_ACCESS_TOKEN = "key_access_token"
         private const val KEY_REFRESH_TOKEN = "key_refresh_token"
     }
 
-    fun saveSession(accessToken: String, refreshToken: String) {
+    fun saveSession(userId: String, accessToken: String, refreshToken: String) {
         prefs.edit().apply {
+            putString(USER_ID, userId)
             putString(KEY_ACCESS_TOKEN, accessToken)
             putString(KEY_REFRESH_TOKEN, refreshToken)
             apply()
@@ -27,10 +29,11 @@ class SessionManager @Inject constructor(
     }
 
     fun getSession(): AuthSession? {
+        val userId = prefs.getString(USER_ID, null)
         val accessToken = prefs.getString(KEY_ACCESS_TOKEN, null)
         val refreshToken = prefs.getString(KEY_REFRESH_TOKEN, null)
-        return if (accessToken != null && refreshToken != null) {
-            AuthSession(accessToken, refreshToken)
+        return if (userId != null && accessToken != null && refreshToken != null) {
+            AuthSession(userId, accessToken, refreshToken)
         } else null
     }
 
