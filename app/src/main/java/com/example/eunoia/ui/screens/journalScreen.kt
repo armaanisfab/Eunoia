@@ -1,12 +1,8 @@
 package com.example.eunoia.ui.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,10 +12,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,23 +22,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.eunoia.R
+import com.example.eunoia.feature.journal.data.model.JournalEntry
+import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
 import com.example.eunoia.ui.components.HeadingText
-import com.example.eunoia.ui.components.SubheadingText
 import com.example.eunoia.ui.components.VerticalSpacer
 import com.example.eunoia.ui.theme.ThemePurple1
 import com.example.eunoia.ui.theme.ThemePurple2
 import com.example.eunoia.ui.theme.ThemePurple3
-import com.example.eunoia.ui.theme.space1
 import com.example.eunoia.ui.theme.space2
+import java.util.UUID
 
 @Composable
-fun JournalScreen(navController: NavController) {
+fun JournalScreen(navController: NavController, journalViewModel: JournalViewModel = hiltViewModel()) {
+    val userId = "c1e52b35-abba-4de2-af99-6d16ca88be2c";
+
+    LaunchedEffect(key1 = Unit) {
+        journalViewModel.fetchOrCreateUserJournal(userId)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -93,7 +94,21 @@ fun JournalScreen(navController: NavController) {
             verticalArrangement = Arrangement.Bottom
         ) {
             Button(
-                onClick = { navController.navigate(Routes.Home.route) },
+//                onClick = { navController.navigate(Routes.Home.route) },
+                onClick = {
+                    val journalId = journalViewModel.journalState.value?.id ?: ""
+                    if (journalId.isNotEmpty() && textFieldValue.isNotBlank()) {
+                        journalViewModel.createJournalEntry(
+                            JournalEntry(
+                                id = UUID.randomUUID().toString(),
+                                journalId = journalId,
+                                entryDate = System.currentTimeMillis().toString(),
+                                content = textFieldValue
+                            )
+                        )
+                        textFieldValue = ""
+                    }
+                },
                 enabled = textFieldValue.isNotEmpty(), // Button becomes active when text is entered
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (textFieldValue.isNotEmpty()) ThemePurple3 else Color.Gray,

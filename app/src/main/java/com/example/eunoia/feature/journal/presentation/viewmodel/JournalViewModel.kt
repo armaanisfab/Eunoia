@@ -6,11 +6,13 @@ import com.example.eunoia.feature.journal.data.model.Journal
 import com.example.eunoia.feature.journal.data.model.JournalEntry
 import com.example.eunoia.feature.journal.data.repository.JournalEntryRepository
 import com.example.eunoia.feature.journal.data.repository.JournalRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class JournalViewModel @Inject constructor(
     private val journalRepository: JournalRepository,
     private val journalEntryRepository: JournalEntryRepository
@@ -22,9 +24,15 @@ class JournalViewModel @Inject constructor(
     private val _entriesState = MutableStateFlow<List<JournalEntry>>(emptyList())
     val entriesState: StateFlow<List<JournalEntry>> = _entriesState
 
-    fun fetchUserJournal(userId: String) {
+//    fun fetchUserJournal(userId: String) {
+//        viewModelScope.launch {
+//            _journalState.value = journalRepository.fetchUserJournal(userId)
+//        }
+//    }
+
+    fun fetchOrCreateUserJournal(userId: String) {
         viewModelScope.launch {
-            _journalState.value = journalRepository.fetchUserJournal(userId)
+            _journalState.value = journalRepository.getOrCreateJournal(userId)
         }
     }
 
