@@ -7,5 +7,12 @@ import javax.inject.Inject
 class JournalRepository @Inject constructor(
     private val journalService: JournalService
 ) {
-    suspend fun fetchJournals(): List<Journal> = journalService.fetchJournals()
+    suspend fun fetchUserJournal(userId: String): Journal? =
+        journalService.fetchUserJournal(userId)
+
+    suspend fun createJournal(journal: Journal): Journal? =
+        journalService.createJournal(journal)
+
+    suspend fun updateJournal(journal: Journal): Journal? =
+        journalService.updateJournal(journal)
 }

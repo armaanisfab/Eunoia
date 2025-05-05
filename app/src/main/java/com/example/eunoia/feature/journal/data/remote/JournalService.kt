@@ -10,9 +10,31 @@ import javax.inject.Inject
 class JournalService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
-    suspend fun fetchJournals(): List<Journal> = withContext(Dispatchers.IO) {
+    suspend fun fetchUserJournal(userId: String): Journal? = withContext(Dispatchers.IO) {
+        // todo: why the hell did i capitalize my table names? why are they singular? lmao
         supabaseClient.from("Journal")
-            .select()
+            .select(){
+                filter {
+                    Journal::userId eq userId
+                }
+            }
             .decodeList<Journal>()
+            .firstOrNull()
+    }
+
+    suspend fun createJournal(journal: Journal): Journal? = withContext(Dispatchers.IO) {
+        supabaseClient.from("Journal")
+            .insert(journal)
+            .decodeSingleOrNull()
+    }
+
+    suspend fun updateJournal(journal: Journal): Journal? = withContext(Dispatchers.IO) {
+        supabaseClient.from("Journal")
+            .update(journal) {
+                filter {
+                    Journal::id eq journal.id
+                }
+            }
+            .decodeSingleOrNull()
     }
 }
