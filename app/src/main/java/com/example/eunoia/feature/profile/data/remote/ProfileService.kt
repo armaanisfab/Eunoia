@@ -12,7 +12,7 @@ class ProfileService @Inject constructor(
 ) {
     suspend fun fetchProfile(userId: String): Profile? = withContext(Dispatchers.IO) {
         supabaseClient.from("profiles")
-            .select(){
+            .select {
                 filter {
                     Profile::id eq userId
                 }
@@ -22,8 +22,15 @@ class ProfileService @Inject constructor(
     }
 
     suspend fun createProfile(profile: Profile): Profile? = withContext(Dispatchers.IO) {
-        supabaseClient.from("profiles")
-            .insert(profile)
-            .decodeSingleOrNull<Profile>()
+        try {
+            supabaseClient.from("profiles")
+                .insert(profile) {
+                    select()
+                }
+                .decodeSingleOrNull<Profile>()
+        } catch (e: Exception) {
+            println("Error creating profile: ${e.message}")
+            null
+        }
     }
 }

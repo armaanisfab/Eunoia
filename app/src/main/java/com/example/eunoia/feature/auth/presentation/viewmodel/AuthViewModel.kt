@@ -34,11 +34,11 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, username: String) {
         viewModelScope.launch {
             _userState.value = AuthState.Loading
             try {
-                val session: AuthSession? = authRepository.signUp(email, password)
+                val session: AuthSession? = authRepository.signUp(email, password, username)
                 _userState.value = if (session != null) {
                     AuthState.Authenticated(session)
                 } else {

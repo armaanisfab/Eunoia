@@ -37,7 +37,8 @@ import com.example.eunoia.ui.theme.space1
 import com.example.eunoia.ui.theme.space2
 
 @Composable
-fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel()) {
+fun SignupScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel()) {
+    var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -46,7 +47,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = hil
     LaunchedEffect(key1 = authState) {
         if (authState is AuthState.Authenticated) {
             navController.navigate(Routes.Home.route) {
-                popUpTo(Routes.Login.route) { inclusive = true }
+                popUpTo(Routes.Signup.route) { inclusive = true }
             }
         }
     }
@@ -58,9 +59,23 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = hil
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        HeadingText(text = "Welcome to")
+        HeadingText(text = "Sign up for")
         GradientHeadingText(text = "Eunoia", size = 62)
         VerticalSpacer(space = space1.dp)
+
+        TextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth(0.8f),
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = ThemePurple1,
+                focusedContainerColor = ThemePurple2,
+                unfocusedTextColor = Color.Black,
+                focusedTextColor = Color.Black
+            )
+        )
+        VerticalSpacer(space = space2.dp)
 
         TextField(
             value = email,
@@ -102,21 +117,21 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = hil
         }
 
         Button(
-            onClick = { authViewModel.signIn(email, password) },
-            enabled = email.isNotEmpty() && password.isNotEmpty(),
+            onClick = { authViewModel.signUp(email, password, username) },
+            enabled = username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (email.isNotEmpty() && password.isNotEmpty()) ThemePurple3 else Color.Gray,
+                containerColor = if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) ThemePurple3 else Color.Gray,
                 contentColor = Color.White
             ),
             modifier = Modifier.fillMaxWidth(0.8f)
         ) {
-            Text(text = "Login")
+            Text(text = "Sign Up")
         }
         VerticalSpacer(space = 4.dp)
         Text(
-            text = "New user? Sign up",
+            text = "Already have an account? Login",
             modifier = Modifier.clickable {
-                navController.navigate(Routes.Signup.route)
+                navController.navigate(Routes.Login.route)
             }
         )
     }

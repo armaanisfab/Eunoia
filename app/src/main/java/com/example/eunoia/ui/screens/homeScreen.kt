@@ -29,35 +29,7 @@ import com.example.eunoia.ui.theme.space2
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
-   profileViewModel: ProfileViewModel = hiltViewModel()
-) {
-    val profile by profileViewModel.profileState.collectAsState()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (profile == null) {
-            CircularProgressIndicator()
-        } else {
-            Text(
-                text = "User ID: ${profile!!.id}",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "Username: ${profile!!.username}",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "Email: ${profile!!.email}",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
+    navController: NavController) {
 
     Column(
         modifier = Modifier

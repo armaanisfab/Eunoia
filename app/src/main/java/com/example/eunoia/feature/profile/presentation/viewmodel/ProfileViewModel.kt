@@ -21,6 +21,10 @@ class ProfileViewModel @Inject constructor(
     val profileState: StateFlow<Profile?> = _profileState
 
     init {
+        loadProfile()
+    }
+
+    private fun loadProfile() {
         viewModelScope.launch {
             val session = authRepository.getSession()
             session?.let { authSession ->

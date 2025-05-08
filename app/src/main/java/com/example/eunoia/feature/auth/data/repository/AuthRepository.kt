@@ -10,8 +10,8 @@ class AuthRepository @Inject constructor(
     private val authService: AuthService,
     private val sessionManager: SessionManager
 ) {
-    suspend fun signUp(email: String, password: String): AuthSession? {
-        val session = authService.signUp(email, password)
+    suspend fun signUp(email: String, password: String, username: String): AuthSession? {
+        val session = authService.signUp(email, password, username)
         session?.let {
             sessionManager.saveSession(it.userId, it.accessToken, it.refreshToken)
         }
@@ -43,8 +43,8 @@ class AuthRepository @Inject constructor(
         return if (authUser?.id == userId) {
             AuthUser(
                 userId = authUser.id,
-                email = authUser.email ?: "peepee",
-                username = (authUser.userMetadata?.get("username") ?: "armaanisfab").toString(),
+                email = authUser.email ?: "unknown@example.com",
+                username = authUser.userMetadata?.get("username")?.toString() ?: authUser.email?.substringBefore("@") ?: "unknown"
             )
         } else {
             null
