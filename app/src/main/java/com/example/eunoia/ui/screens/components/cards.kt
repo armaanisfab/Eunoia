@@ -76,6 +76,37 @@ fun icon_heading_subheading(
 }
 
 @Composable
+fun heading_subheading(
+    heading: String,
+    subheading: String,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .border(width = 1.dp, color = ThemePurple4, shape = RoundedCornerShape(8.dp)),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ThemePurple1)
+                .padding(15.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ) {
+            BoldText(
+                text = heading
+            )
+            VerticalSpacer(space = 3.dp)
+            NormalText(
+                text = subheading
+            )
+        }
+    }
+}
+
+@Composable
 fun number_text_number_text(
     number1: Int,
     text1: String,

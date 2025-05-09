@@ -76,4 +76,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation("com.patrykandpatrick.vico:compose:1.16.0")
 }
