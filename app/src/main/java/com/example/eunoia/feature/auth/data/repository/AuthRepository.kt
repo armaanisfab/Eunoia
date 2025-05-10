@@ -2,8 +2,8 @@ package com.example.eunoia.feature.auth.data.repository
 
 import com.example.eunoia.feature.auth.data.local.SessionManager
 import com.example.eunoia.feature.auth.data.model.AuthSession
+import com.example.eunoia.feature.auth.data.model.AuthUser
 import com.example.eunoia.feature.auth.data.remote.AuthService
-import com.example.eunoia.feature.profile.data.model.AuthUser
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(

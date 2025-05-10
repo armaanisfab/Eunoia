@@ -2,7 +2,6 @@ package com.example.eunoia.feature.journal.data.repository
 
 import com.example.eunoia.feature.journal.data.model.JournalEntry
 import com.example.eunoia.feature.journal.data.remote.JournalEntryService
-import java.util.UUID
 import javax.inject.Inject
 
 class JournalEntryRepository @Inject constructor(
@@ -17,7 +16,6 @@ class JournalEntryRepository @Inject constructor(
     suspend fun createJournalEntry(content: String, journalId: String): JournalEntry? =
         journalEntryService.createJournalEntry(
             JournalEntry(
-                id = UUID.randomUUID().toString(),
                 journalId = journalId,
                 content = content
             )

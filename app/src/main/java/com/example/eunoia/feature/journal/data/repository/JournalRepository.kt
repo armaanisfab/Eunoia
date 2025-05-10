@@ -13,7 +13,6 @@ class JournalRepository @Inject constructor(
     suspend fun getOrCreateJournal(userId: String): Journal? {
         return fetchUserJournal(userId) ?: createJournal(
             Journal(
-                id = "",
                 userId = userId,
                 title = "My Journal"
             )

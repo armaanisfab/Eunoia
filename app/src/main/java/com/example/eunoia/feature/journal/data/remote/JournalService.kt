@@ -23,8 +23,10 @@ class JournalService @Inject constructor(
 
     suspend fun createJournal(journal: Journal): Journal? = withContext(Dispatchers.IO) {
         supabaseClient.from("journal")
-            .insert(journal)
-            .decodeSingleOrNull()
+            .insert(journal) {
+                select()
+            }
+            .decodeSingleOrNull<Journal>()
     }
 
     suspend fun updateJournal(journal: Journal): Journal? = withContext(Dispatchers.IO) {

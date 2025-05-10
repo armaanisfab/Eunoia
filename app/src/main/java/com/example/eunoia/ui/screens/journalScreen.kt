@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,19 +29,41 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
+import com.example.eunoia.feature.profile.presentation.ui.MissingIdAlert
+import com.example.eunoia.feature.profile.presentation.viewmodel.ProfileViewModel
 import com.example.eunoia.ui.components.HeadingText
 import com.example.eunoia.ui.components.VerticalSpacer
 import com.example.eunoia.ui.theme.ThemePurple1
 import com.example.eunoia.ui.theme.ThemePurple2
 import com.example.eunoia.ui.theme.ThemePurple3
 import com.example.eunoia.ui.theme.space2
+import kotlinx.coroutines.delay
 
 @Composable
-fun JournalScreen(navController: NavController, journalViewModel: JournalViewModel = hiltViewModel()) {
-    val userId = "225e9d54-ae0c-4568-aad8-dbd9dabf362e";
+fun JournalScreen(navController: NavController, journalViewModel: JournalViewModel = hiltViewModel(),
+                  profileViewModel: ProfileViewModel = hiltViewModel()) {
 
-    LaunchedEffect(key1 = Unit) {
-        journalViewModel.fetchOrCreateUserJournal(userId)
+    val profile by profileViewModel.profileState.collectAsState()
+    val userId = profile?.id;
+    var kaboom by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = userId) {
+        if (!userId.isNullOrEmpty()) {
+            journalViewModel.fetchOrCreateUserJournal(userId)
+        } else {
+            delay(5000L)
+            if (userId.isNullOrEmpty()) {
+                kaboom = true
+            }
+        }
+    }
+
+    if (kaboom) {
+        MissingIdAlert(
+            onDismiss = { navController.navigate(Routes.Me.route) },
+            onConfirm = { navController.navigate(Routes.Me.route) }
+        )
+        return
     }
 
     Column(
@@ -94,10 +117,9 @@ fun JournalScreen(navController: NavController, journalViewModel: JournalViewMod
             Button(
 //                onClick = { navController.navigate(Routes.Home.route) },
                 onClick = {
-                    val journalId = journalViewModel.journalState.value?.id ?: ""
-                    if (journalId.isNotEmpty() && textFieldValue.isNotBlank()) {
+                    if (textFieldValue.isNotBlank()) {
                         journalViewModel.createJournalEntry(
-                            textFieldValue, journalId
+                            textFieldValue
                         )
                         textFieldValue = ""
                     }

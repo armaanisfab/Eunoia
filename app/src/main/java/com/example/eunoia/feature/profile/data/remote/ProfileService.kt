@@ -22,15 +22,10 @@ class ProfileService @Inject constructor(
     }
 
     suspend fun createProfile(profile: Profile): Profile? = withContext(Dispatchers.IO) {
-        try {
-            supabaseClient.from("profiles")
-                .insert(profile) {
-                    select()
-                }
-                .decodeSingleOrNull<Profile>()
-        } catch (e: Exception) {
-            println("Error creating profile: ${e.message}")
-            null
-        }
+        supabaseClient.from("profiles")
+            .insert(profile) {
+                select()
+            }
+            .decodeSingleOrNull<Profile>()
     }
 }

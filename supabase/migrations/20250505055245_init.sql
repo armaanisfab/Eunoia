@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS public.entry (
 );
 
 CREATE TABLE IF NOT EXISTS public.feedback (
-  id bigint NOT NULL,
+  id uuid DEFAULT gen_random_uuid() NOT NULL,
   created_at timestamp with time zone DEFAULT now() NOT NULL,
   entry_id uuid,
   content text,
