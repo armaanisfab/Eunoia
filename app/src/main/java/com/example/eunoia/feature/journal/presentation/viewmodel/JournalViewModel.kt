@@ -24,30 +24,48 @@ class JournalViewModel @Inject constructor(
     private val _entriesState = MutableStateFlow<List<JournalEntry>>(emptyList())
     val entriesState: StateFlow<List<JournalEntry>> = _entriesState
 
-//    fun fetchUserJournal(userId: String) {
-//        viewModelScope.launch {
-//            _journalState.value = journalRepository.fetchUserJournal(userId)
-//        }
-//    }
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun fetchOrCreateUserJournal(userId: String) {
+    init {
         viewModelScope.launch {
-            _journalState.value = journalRepository.getOrCreateJournal(userId)
-        }
-    }
-
-    fun fetchJournalEntries(journalId: String) {
-        viewModelScope.launch {
-            _entriesState.value = journalEntryRepository.fetchJournalEntries(journalId)
-        }
-    }
-
-    fun createJournalEntry(content: String, journalId: String) {
-        viewModelScope.launch {
-            val createdEntry = journalEntryRepository.createJournalEntry(content, journalId)
-            if (createdEntry != null) {
-                _entriesState.value += createdEntry
+            _journalState.collect { journal ->
+                journal?.id?.let { journalId ->
+                    fetchJournalEntries(journalId)
+                }
             }
         }
     }
+
+    fun fetchOrCreateUserJournal(userId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _journalState.value = journalRepository.getOrCreateJournal(userId)
+            println("Fetched or created journal: ${_journalState.value?.id}")
+            _isLoading.value = false
+        }
+    }
+
+    fun createJournalEntry(content: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _journalState.value?.id?.let { journalId ->
+                journalEntryRepository.createJournalEntry(content, journalId)
+                println("Created journal entry: $journalId")
+                fetchJournalEntries(journalId)
+            }
+            _isLoading.value = false
+        }
+    }
+
+    private fun fetchJournalEntries(journalId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            println("Fetching journal entries for journal ID: $journalId")
+            _entriesState.value = journalEntryRepository.fetchJournalEntries(journalId)
+            _isLoading.value = false
+        }
+    }
 }
+
+

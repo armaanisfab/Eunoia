@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.eunoia.ui.screens.components.BottomNavigationBar
 import com.example.eunoia.ui.screens.HomeScreen
 import com.example.eunoia.ui.screens.InsightsScreen
 import com.example.eunoia.ui.screens.JournalScreen
@@ -24,6 +23,7 @@ import com.example.eunoia.ui.screens.MoodScreen
 import com.example.eunoia.ui.screens.ProgressScreen
 import com.example.eunoia.ui.screens.Routes
 import com.example.eunoia.ui.screens.SignupScreen
+import com.example.eunoia.ui.screens.components.BottomNavigationBar
 import com.example.eunoia.ui.theme.EunoiaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,7 +63,7 @@ fun EunoiaScaffold() {
             composable(Routes.Login.route) { LoginScreen(navController = navController) }
             composable(Routes.Signup.route) { SignupScreen(navController = navController) }
             composable(Routes.Home.route) { HomeScreen(navController = navController) }
-            composable(Routes.Progress.route) { ProgressScreen() }
+            composable(Routes.Progress.route) { ProgressScreen(navController = navController) }
             composable(Routes.Me.route) { MeScreen(navController = navController) }
 
             // Auxiliary pages
