@@ -20,6 +20,9 @@ class ProfileViewModel @Inject constructor(
     private val _profileState = MutableStateFlow<Profile?>(null)
     val profileState: StateFlow<Profile?> = _profileState
 
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState: StateFlow<String?> = _errorState
+
     init {
         loadProfile()
     }

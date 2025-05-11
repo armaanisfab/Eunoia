@@ -26,11 +26,13 @@ class AuthViewModel @Inject constructor(
     private fun checkExistingSession() {
         viewModelScope.launch {
             val session: AuthSession? = authRepository.getSession()
-            _userState.value = if (session != null) {
-                AuthState.Authenticated(session)
-            } else {
-                AuthState.Unauthenticated
-            }
+            println("Session: $session")
+            _userState.value =
+                if (session != null && authRepository.getUserDetails(session.userId) != null) {
+                    AuthState.Authenticated(session)
+                } else {
+                    AuthState.Unauthenticated
+                }
         }
     }
 

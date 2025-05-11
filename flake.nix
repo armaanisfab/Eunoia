@@ -16,18 +16,19 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        packages = with pkgs; [ 
-                    kotlin-language-server
-                    supabase-cli
-                ];
-            in
-                {
-                devShell = pkgs.mkShell {
-                    buildInputs = packages;
-                    shellHook = ''
+        packages = with pkgs; [
+          python312
+          kotlin-language-server
+          supabase-cli
+        ];
+      in
+      {
+        devShell = pkgs.mkShell {
+          buildInputs = packages;
+          shellHook = ''
             echo "Welcome to the development shell!"
-                    '';
-                };
-            }
-        );
+          '';
+        };
+      }
+    );
 }

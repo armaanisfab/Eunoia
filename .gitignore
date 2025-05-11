@@ -4,3 +4,6 @@
 .kotlin
 *.db
 .direnv
+.env
+.venv
+__pycache__

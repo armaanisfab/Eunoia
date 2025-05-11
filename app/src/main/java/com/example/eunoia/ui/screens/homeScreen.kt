@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
+import com.example.eunoia.common.utils.OffsetDTHelper.isToday
 import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
 import com.example.eunoia.feature.moodlog.presentation.viewmodel.MoodLogViewModel
 import com.example.eunoia.feature.profile.presentation.viewmodel.ProfileViewModel
@@ -39,8 +41,8 @@ fun HomeScreen(
     val userId = profile?.id
 
     LaunchedEffect(key1 = userId) {
-        if (userId != null) {
-            journalViewModel.fetchOrCreateUserJournal(userId)
+        userId?.let {
+            journalViewModel.fetchOrCreateUserJournal(it)
         }
     }
 
@@ -55,15 +57,16 @@ fun HomeScreen(
             CircularProgressIndicator()
         }
     } else {
-        LaunchedEffect(journalId) {
-            if (journalId != null) {
-                moodLogViewModel.fetchMoodLogs(journalId)
-            }
+        LaunchedEffect(key1 = journalId) {
+            journalId?.let { moodLogViewModel.fetchMoodLogs(it) }
         }
     }
 
-    moodLogViewModel.moodLogsState.collectAsState()
-    val canSubmitMoodLog = moodLogViewModel.canSubmitMoodLog()
+    val moodLogs by moodLogViewModel.moodLogsState.collectAsState()
+
+    val canSubmitMoodLog = remember(moodLogs) {
+        moodLogs.lastOrNull()?.let { !it.createdAt.isToday() } ?: true
+    }
 
     Column(
         modifier = Modifier
@@ -72,6 +75,7 @@ fun HomeScreen(
     ) {
         HeadingText(text = "Welcome to Eunoia")
         VerticalSpacer(space = space1.dp)
+
         val homeScreenImageCarousel = listOf(
             R.drawable.quote1,
             R.drawable.quote2,
@@ -117,6 +121,7 @@ fun HomeScreen(
         )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

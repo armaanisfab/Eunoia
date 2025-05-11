@@ -53,11 +53,6 @@ class MoodLogViewModel @Inject constructor(
         }
     }
 
-    fun canSubmitMoodLog(): Boolean {
-        val latestLog = _moodLogsState.value.lastOrNull()
-        return latestLog == null || !latestLog.createdAt.isToday()
-    }
-
     fun createMoodLog(newMoodLog: MoodLog) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -65,7 +60,7 @@ class MoodLogViewModel @Inject constructor(
             val currentLogs = _moodLogsState.value.sortedBy { it.createdAt }
             val lastLog = currentLogs.lastOrNull()
 
-            if (!canSubmitMoodLog()) {
+            if (lastLog != null && lastLog.createdAt.isToday()) {
                 _errorState.value = "Mood log for today already exists"
                 _isLoading.value = false
                 return@launch
@@ -82,13 +77,18 @@ class MoodLogViewModel @Inject constructor(
 
             if (lastLog != null && lastLog.createdAt.isYesterday()) {
                 val currentStreak = streakRepository.fetchStreak(lastLog.id)
+                println("Current streak: $currentStreak")
                 val updatedStreak = if (currentStreak != null) {
+                    println("Updating streak: $currentStreak")
                     streakRepository.updateStreak(currentStreak.copy(count = currentStreak.count + 1))
                 } else {
+                    println("Creating new streak (old one not found)")
                     streakRepository.createStreak(Streak(moodId = createdLog.id, count = 1))
                 }
+                println("Updated streak: $updatedStreak")
                 _streakState.value = updatedStreak
             } else {
+                println("Creating new streak (broke the streak)")
                 val newStreak =
                     streakRepository.createStreak(Streak(moodId = createdLog.id, count = 1))
                 _streakState.value = newStreak
