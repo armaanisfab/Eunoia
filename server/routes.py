@@ -9,5 +9,6 @@ router = APIRouter()
 async def submit_entry(entry: Entry, background_tasks: BackgroundTasks):
     background_tasks.add_task(analyze_and_insert_feedback, entry)
     return {
-        "message": "Journal entry submitted. The feedback will be processed shortly."
+        "message": "Journal entry submitted. The feedback will be processed shortly.",
+        "success": True,
     }

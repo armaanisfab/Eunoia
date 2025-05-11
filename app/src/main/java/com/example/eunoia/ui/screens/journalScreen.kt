@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.eunoia.feature.feedback.presentation.viewmodel.FeedbackViewModel
 import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
 import com.example.eunoia.feature.profile.presentation.ui.MissingIdAlert
 import com.example.eunoia.feature.profile.presentation.viewmodel.ProfileViewModel
@@ -41,8 +42,10 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun JournalScreen(
-    navController: NavController, journalViewModel: JournalViewModel = hiltViewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    navController: NavController,
+    journalViewModel: JournalViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    feedbackViewModel: FeedbackViewModel = hiltViewModel()
 ) {
 
     val profile by profileViewModel.profileState.collectAsState()
@@ -64,6 +67,12 @@ fun JournalScreen(
             onConfirm = { navController.navigate(Routes.Me.route) }
         )
         return
+    }
+
+    LaunchedEffect(Unit) {
+        journalViewModel.newEntryEvent.collect { entry ->
+            feedbackViewModel.submitJournalEntry(entry)
+        }
     }
 
     Column(
@@ -122,6 +131,9 @@ fun JournalScreen(
                             textFieldValue
                         )
                         textFieldValue = ""
+//                        feedbackViewModel.submitJournalEntry(
+//                            journalViewModel.entriesState.value.last()
+//                        )
                     }
                 },
                 enabled = textFieldValue.isNotEmpty(), // Button becomes active when text is entered
