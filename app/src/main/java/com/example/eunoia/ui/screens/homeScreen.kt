@@ -1,13 +1,12 @@
 package com.example.eunoia.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,6 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
+import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
+import com.example.eunoia.feature.moodlog.presentation.viewmodel.MoodLogViewModel
 import com.example.eunoia.feature.profile.presentation.viewmodel.ProfileViewModel
 import com.example.eunoia.ui.components.HeadingText
 import com.example.eunoia.ui.components.SubheadingText
@@ -29,7 +30,40 @@ import com.example.eunoia.ui.theme.space2
 
 @Composable
 fun HomeScreen(
-    navController: NavController) {
+    navController: NavController,
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    journalViewModel: JournalViewModel = hiltViewModel(),
+    moodLogViewModel: MoodLogViewModel = hiltViewModel()
+) {
+    val profile by profileViewModel.profileState.collectAsState()
+    val userId = profile?.id
+
+    LaunchedEffect(key1 = userId) {
+        if (userId != null) {
+            journalViewModel.fetchOrCreateUserJournal(userId)
+        }
+    }
+
+    val isJournalLoading by journalViewModel.isLoading.collectAsState()
+    val journalId = journalViewModel.journalState.collectAsState().value?.id
+
+    if (isJournalLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        LaunchedEffect(journalId) {
+            if (journalId != null) {
+                moodLogViewModel.fetchMoodLogs(journalId)
+            }
+        }
+    }
+
+    moodLogViewModel.moodLogsState.collectAsState()
+    val canSubmitMoodLog = moodLogViewModel.canSubmitMoodLog()
 
     Column(
         modifier = Modifier
@@ -48,13 +82,17 @@ fun HomeScreen(
         VerticalSpacer(space = space1.dp)
         SubheadingText(text = "Check in with yourself")
         VerticalSpacer(space = space2.dp)
-        icon_heading_subheading(
-            heading = "Log your mood",
-            subheading = "How are you feeling today?",
-            iconResId = R.drawable.smile_icon,
-            onClick = { navController.navigate(Routes.Mood.route) }
-        )
-        VerticalSpacer(space = space2.dp)
+
+        if (canSubmitMoodLog) {
+            icon_heading_subheading(
+                heading = "Log your mood",
+                subheading = "How are you feeling today?",
+                iconResId = R.drawable.smile_icon,
+                onClick = { navController.navigate(Routes.Mood.route) }
+            )
+            VerticalSpacer(space = space2.dp)
+        }
+
         icon_heading_subheading(
             heading = "Pen your journal",
             subheading = "What's on your mind?",

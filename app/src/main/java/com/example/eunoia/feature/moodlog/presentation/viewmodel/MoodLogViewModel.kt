@@ -53,24 +53,10 @@ class MoodLogViewModel @Inject constructor(
         }
     }
 
-
-//    fun createMoodLog(moodLog: MoodLog) {
-//        viewModelScope.launch {
-//            _isLoading.value = true
-//            moodLogRepository.createMoodLog(moodLog)?.let { newLog ->
-//                _moodLogsState.value += newLog
-//                streakRepository.createStreak(
-//                    Streak(
-//                        moodId = newLog.id,
-//                        count = 1,
-//                    )
-//                )?.let { newStreak ->
-//                    _streakState.value = newStreak
-//                }
-//            }
-//            _isLoading.value = false
-//        }
-//    }
+    fun canSubmitMoodLog(): Boolean {
+        val latestLog = _moodLogsState.value.lastOrNull()
+        return latestLog == null || !latestLog.createdAt.isToday()
+    }
 
     fun createMoodLog(newMoodLog: MoodLog) {
         viewModelScope.launch {
@@ -79,7 +65,7 @@ class MoodLogViewModel @Inject constructor(
             val currentLogs = _moodLogsState.value.sortedBy { it.createdAt }
             val lastLog = currentLogs.lastOrNull()
 
-            if (lastLog != null && lastLog.createdAt.isToday()) {
+            if (!canSubmitMoodLog()) {
                 _errorState.value = "Mood log for today already exists"
                 _isLoading.value = false
                 return@launch
