@@ -58,7 +58,7 @@ fun MoodScreen(
     val userId = profile?.id
 
     LaunchedEffect(key1 = userId) {
-        if (!userId.isNullOrEmpty()) {
+        if (userId != null) {
             journalViewModel.fetchOrCreateUserJournal(userId)
         }
     }
@@ -75,7 +75,7 @@ fun MoodScreen(
         }
     } else {
         LaunchedEffect(journalId) {
-            if (!journalId.isNullOrEmpty()) {
+            if (journalId != null) {
                 moodLogViewModel.fetchMoodLogs(journalId)
             }
         }

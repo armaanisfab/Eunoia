@@ -40,21 +40,21 @@ import com.example.eunoia.ui.theme.space2
 import kotlinx.coroutines.delay
 
 @Composable
-fun JournalScreen(navController: NavController, journalViewModel: JournalViewModel = hiltViewModel(),
-                  profileViewModel: ProfileViewModel = hiltViewModel()) {
+fun JournalScreen(
+    navController: NavController, journalViewModel: JournalViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel()
+) {
 
     val profile by profileViewModel.profileState.collectAsState()
-    val userId = profile?.id;
+    val userId = profile?.id
     var kaboom by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = userId) {
-        if (!userId.isNullOrEmpty()) {
+        if (userId != null) {
             journalViewModel.fetchOrCreateUserJournal(userId)
         } else {
             delay(5000L)
-            if (userId.isNullOrEmpty()) {
-                kaboom = true
-            }
+            kaboom = true
         }
     }
 

@@ -14,7 +14,7 @@ import com.example.eunoia.feature.journal.data.model.JournalEntry
 fun JournalEntryCard(entry: JournalEntry) {
     Card(modifier = Modifier.padding(8.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = entry.createdAt, style = MaterialTheme.typography.titleMedium)
+            Text(text = entry.createdAt.toString(), style = MaterialTheme.typography.titleMedium)
             Text(text = entry.content, style = MaterialTheme.typography.bodyMedium)
         }
     }

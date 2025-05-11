@@ -2,6 +2,8 @@ package com.example.eunoia.feature.moodlog.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.eunoia.common.utils.OffsetDTHelper.isToday
+import com.example.eunoia.common.utils.OffsetDTHelper.isYesterday
 import com.example.eunoia.feature.moodlog.data.model.MoodLog
 import com.example.eunoia.feature.moodlog.data.model.Streak
 import com.example.eunoia.feature.moodlog.data.repository.MoodLogRepository
@@ -10,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +27,9 @@ class MoodLogViewModel @Inject constructor(
     private val _streakState = MutableStateFlow<Streak?>(null)
     val streakState: StateFlow<Streak?> = _streakState
 
+    private val _errorState = MutableStateFlow("")
+    val errorState: StateFlow<String> = _errorState
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -37,68 +43,69 @@ class MoodLogViewModel @Inject constructor(
         }
     }
 
-    fun fetchMoodLogs(journalId: String) {
+    fun fetchMoodLogs(journalId: UUID) {
         viewModelScope.launch {
             _isLoading.value = true
             val logs = moodLogRepository.fetchMoodLogs(journalId)
+                .sortedBy { it.createdAt }
             _moodLogsState.value = logs
-
-            logs.lastOrNull()?.let { latestLog ->
-                _streakState.value = streakRepository.fetchStreak(latestLog.id)
-            }
             _isLoading.value = false
         }
     }
 
-    fun createMoodLog(moodLog: MoodLog) {
+
+//    fun createMoodLog(moodLog: MoodLog) {
+//        viewModelScope.launch {
+//            _isLoading.value = true
+//            moodLogRepository.createMoodLog(moodLog)?.let { newLog ->
+//                _moodLogsState.value += newLog
+//                streakRepository.createStreak(
+//                    Streak(
+//                        moodId = newLog.id,
+//                        count = 1,
+//                    )
+//                )?.let { newStreak ->
+//                    _streakState.value = newStreak
+//                }
+//            }
+//            _isLoading.value = false
+//        }
+//    }
+
+    fun createMoodLog(newMoodLog: MoodLog) {
         viewModelScope.launch {
             _isLoading.value = true
-            moodLogRepository.createMoodLog(moodLog)?.let { newLog ->
-                _moodLogsState.value += newLog
-                streakRepository.createStreak(
-                    Streak(
-                        moodId = newLog.id,
-                        count = 1,
-                    )
-                )?.let { newStreak ->
-                    _streakState.value = newStreak
+
+            val currentLogs = _moodLogsState.value.sortedBy { it.createdAt }
+            val lastLog = currentLogs.lastOrNull()
+
+            if (lastLog != null && lastLog.createdAt.isToday()) {
+                _errorState.value = "Mood log for today already exists"
+                _isLoading.value = false
+                return@launch
+            }
+
+            val createdLog = moodLogRepository.createMoodLog(newMoodLog)
+            if (createdLog == null) {
+                _errorState.value = "Failed to create mood log"
+                _isLoading.value = false
+                return@launch
+            }
+
+            _moodLogsState.value = currentLogs + createdLog
+
+            if (lastLog != null && lastLog.createdAt.isYesterday()) {
+                val currentStreak = streakRepository.fetchStreak(lastLog.id)
+                val updatedStreak = if (currentStreak != null) {
+                    streakRepository.updateStreak(currentStreak.copy(count = currentStreak.count + 1))
+                } else {
+                    streakRepository.createStreak(Streak(moodId = createdLog.id, count = 1))
                 }
-            }
-            _isLoading.value = false
-        }
-    }
-
-    fun updateMoodLog(moodLog: MoodLog) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            moodLogRepository.updateMoodLog(moodLog)?.let { updatedLog ->
-                _moodLogsState.value = _moodLogsState.value.map {
-                    if (it.id == updatedLog.id) updatedLog else it
-                }
-            }
-            _isLoading.value = false
-        }
-    }
-
-    fun createOrUpdateStreak(streak: Streak) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val existing = streakRepository.fetchStreak(streak.moodId)
-            val updatedStreak = if (existing == null) {
-                streakRepository.createStreak(streak)
+                _streakState.value = updatedStreak
             } else {
-                streakRepository.updateStreak(streak)
-            }
-            _streakState.value = updatedStreak
-            _isLoading.value = false
-        }
-    }
-
-    fun updateStreak(streak: Streak) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            streakRepository.updateStreak(streak)?.let { updated ->
-                _streakState.value = updated
+                val newStreak =
+                    streakRepository.createStreak(Streak(moodId = createdLog.id, count = 1))
+                _streakState.value = newStreak
             }
             _isLoading.value = false
         }

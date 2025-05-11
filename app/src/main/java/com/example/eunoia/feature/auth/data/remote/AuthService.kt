@@ -7,6 +7,7 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import java.util.UUID
 import javax.inject.Inject
 
 class AuthService @Inject constructor(
@@ -22,7 +23,15 @@ class AuthService @Inject constructor(
                 this.data = JsonObject(mapOf("username" to JsonPrimitive(username)))
             }
             val session = authClient.currentSessionOrNull()
-            session?.let { it.user?.let { user -> AuthSession(user.id, it.accessToken, it.refreshToken) } }
+            session?.let {
+                it.user?.let { user ->
+                    AuthSession(
+                        UUID.fromString(user.id),
+                        it.accessToken,
+                        it.refreshToken
+                    )
+                }
+            }
         } catch (e: Exception) {
             println("Error signing up: ${e.message}")
             null
@@ -36,7 +45,15 @@ class AuthService @Inject constructor(
                 this.password = password
             }
             val session = authClient.currentSessionOrNull()
-            session?.let { it.user?.let { user -> AuthSession(user.id, it.accessToken, it.refreshToken) } }
+            session?.let {
+                it.user?.let { user ->
+                    AuthSession(
+                        UUID.fromString(user.id),
+                        it.accessToken,
+                        it.refreshToken
+                    )
+                }
+            }
         } catch (e: Exception) {
             println("Error signing in: ${e.message}")
             null
@@ -53,7 +70,7 @@ class AuthService @Inject constructor(
         }
     }
 
-    suspend fun getUserDetails(userId: String): UserInfo? {
+    suspend fun getUserDetails(): UserInfo? {
         return try {
             authClient.retrieveUserForCurrentSession(updateSession = true)
         } catch (e: Exception) {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.eunoia.feature.auth.data.model.AuthSession
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.UUID
 import javax.inject.Inject
 
 class SessionManager @Inject constructor(
@@ -19,9 +20,9 @@ class SessionManager @Inject constructor(
         private const val KEY_REFRESH_TOKEN = "key_refresh_token"
     }
 
-    fun saveSession(userId: String, accessToken: String, refreshToken: String) {
+    fun saveSession(userId: UUID, accessToken: String, refreshToken: String) {
         prefs.edit().apply {
-            putString(USER_ID, userId)
+            putString(USER_ID, userId.toString())
             putString(KEY_ACCESS_TOKEN, accessToken)
             putString(KEY_REFRESH_TOKEN, refreshToken)
             apply()
@@ -33,7 +34,7 @@ class SessionManager @Inject constructor(
         val accessToken = prefs.getString(KEY_ACCESS_TOKEN, null)
         val refreshToken = prefs.getString(KEY_REFRESH_TOKEN, null)
         return if (userId != null && accessToken != null && refreshToken != null) {
-            AuthSession(userId, accessToken, refreshToken)
+            AuthSession(UUID.fromString(userId), accessToken, refreshToken)
         } else null
     }
 

@@ -4,6 +4,7 @@ import com.example.eunoia.feature.auth.data.local.SessionManager
 import com.example.eunoia.feature.auth.data.model.AuthSession
 import com.example.eunoia.feature.auth.data.model.AuthUser
 import com.example.eunoia.feature.auth.data.remote.AuthService
+import java.util.UUID
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -38,13 +39,14 @@ class AuthRepository @Inject constructor(
         return sessionManager.getSession()
     }
 
-    suspend fun getUserDetails(userId: String): AuthUser? {
-        val authUser = authService.getUserDetails(userId)
-        return if (authUser?.id == userId) {
+    suspend fun getUserDetails(userId: UUID): AuthUser? {
+        val authUser = authService.getUserDetails()
+        return if (authUser?.id == userId.toString()) {
             AuthUser(
                 userId = authUser.id,
                 email = authUser.email ?: "unknown@example.com",
-                username = authUser.userMetadata?.get("username")?.toString() ?: authUser.email?.substringBefore("@") ?: "unknown"
+                username = authUser.userMetadata?.get("username")?.toString()
+                    ?: authUser.email?.substringBefore("@") ?: "unknown"
             )
         } else {
             null

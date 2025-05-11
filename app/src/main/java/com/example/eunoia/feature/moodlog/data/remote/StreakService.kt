@@ -5,12 +5,13 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 
 class StreakService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
-    suspend fun fetchStreak(moodLogId: String): Streak? = withContext(Dispatchers.IO) {
+    suspend fun fetchStreak(moodLogId: UUID): Streak? = withContext(Dispatchers.IO) {
         supabaseClient.from("streak")
             .select {
                 filter {

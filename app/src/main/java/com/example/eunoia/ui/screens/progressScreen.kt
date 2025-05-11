@@ -44,7 +44,7 @@ fun ProgressScreen(
     val userId = profile?.id
 
     LaunchedEffect(key1 = userId) {
-        if (!userId.isNullOrEmpty()) {
+        if (userId != null) {
             journalViewModel.fetchOrCreateUserJournal(userId)
         }
     }

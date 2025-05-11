@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +38,7 @@ class JournalViewModel @Inject constructor(
         }
     }
 
-    fun fetchOrCreateUserJournal(userId: String) {
+    fun fetchOrCreateUserJournal(userId: UUID) {
         viewModelScope.launch {
             _isLoading.value = true
             _journalState.value = journalRepository.getOrCreateJournal(userId)
@@ -58,7 +59,7 @@ class JournalViewModel @Inject constructor(
         }
     }
 
-    private fun fetchJournalEntries(journalId: String) {
+    private fun fetchJournalEntries(journalId: UUID) {
         viewModelScope.launch {
             _isLoading.value = true
             println("Fetching journal entries for journal ID: $journalId")

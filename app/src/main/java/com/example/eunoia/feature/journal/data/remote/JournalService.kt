@@ -5,12 +5,13 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 
 class JournalService @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
-    suspend fun fetchUserJournal(userId: String): Journal? = withContext(Dispatchers.IO) {
+    suspend fun fetchUserJournal(userId: UUID): Journal? = withContext(Dispatchers.IO) {
         supabaseClient.from("journal")
             .select {
                 filter {

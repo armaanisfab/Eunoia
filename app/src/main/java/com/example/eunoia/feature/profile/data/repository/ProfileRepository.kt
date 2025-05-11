@@ -4,6 +4,7 @@ import com.example.eunoia.feature.auth.data.model.AuthUser
 import com.example.eunoia.feature.auth.data.repository.AuthRepository
 import com.example.eunoia.feature.profile.data.model.Profile
 import com.example.eunoia.feature.profile.data.remote.ProfileService
+import java.util.UUID
 import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(
@@ -11,16 +12,17 @@ class ProfileRepository @Inject constructor(
     private val authRepository: AuthRepository
 ) {
 
-    private suspend fun fetchProfile(userId: String): Profile? {
+    private suspend fun fetchProfile(userId: UUID): Profile? {
         return profileService.fetchProfile(userId)
     }
 
-    private suspend fun createProfile(profile: Profile): Profile? = profileService.createProfile(profile)
+    private suspend fun createProfile(profile: Profile): Profile? =
+        profileService.createProfile(profile)
 
-    private suspend fun fetchAuthUserDetails(userId: String): AuthUser? =
+    private suspend fun fetchAuthUserDetails(userId: UUID): AuthUser? =
         authRepository.getUserDetails(userId)
 
-    suspend fun getOrCreateProfile(userId: String): Profile? {
+    suspend fun getOrCreateProfile(userId: UUID): Profile? {
         return fetchProfile(userId) ?: run {
             val authDetails = fetchAuthUserDetails(userId)
             val email = authDetails?.email ?: "unknown@example.com"
