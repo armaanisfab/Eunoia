@@ -12,7 +12,7 @@ class JournalService @Inject constructor(
 ) {
     suspend fun fetchUserJournal(userId: String): Journal? = withContext(Dispatchers.IO) {
         supabaseClient.from("journal")
-            .select(){
+            .select {
                 filter {
                     Journal::userId eq userId
                 }

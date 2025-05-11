@@ -12,9 +12,9 @@ class StreakService @Inject constructor(
 ) {
     suspend fun fetchStreak(moodLogId: String): Streak? = withContext(Dispatchers.IO) {
         supabaseClient.from("streak")
-            .select() {
+            .select {
                 filter {
-                    Streak::moodLogId eq moodLogId
+                    Streak::moodId eq moodLogId
                 }
             }
             .decodeList<Streak>()
@@ -23,7 +23,9 @@ class StreakService @Inject constructor(
 
     suspend fun createStreak(streak: Streak): Streak? = withContext(Dispatchers.IO) {
         supabaseClient.from("streak")
-            .insert(streak)
+            .insert(streak) {
+                select()
+            }
             .decodeSingleOrNull()
     }
 
