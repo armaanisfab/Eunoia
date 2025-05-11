@@ -78,5 +78,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.vico)
+    implementation(libs.okhttp)
     implementation(libs.kotlinx.datetime)
 }

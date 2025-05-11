@@ -11,7 +11,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 class AuthService @Inject constructor(
-    private val supabaseClient: SupabaseClient
+    supabaseClient: SupabaseClient
 ) {
     private val authClient = supabaseClient.auth
 
@@ -70,7 +70,16 @@ class AuthService @Inject constructor(
         }
     }
 
-    suspend fun getUserDetails(): UserInfo? {
+    suspend fun getUserJwt(jwt: String): UserInfo? {
+        return try {
+            authClient.retrieveUser(jwt)
+        } catch (e: Exception) {
+            println("Error checking if user exists: ${e.message}")
+            null
+        }
+    }
+
+    suspend fun getCurrentUserDetails(): UserInfo? {
         return try {
             authClient.retrieveUserForCurrentSession(updateSession = true)
         } catch (e: Exception) {

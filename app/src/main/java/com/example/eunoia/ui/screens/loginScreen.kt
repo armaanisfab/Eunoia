@@ -45,11 +45,13 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = hil
 
     LaunchedEffect(key1 = authState) {
         if (authState is AuthState.Authenticated) {
+            println("User is authenticated")
             navController.navigate(Routes.Home.route) {
                 popUpTo(Routes.Login.route) { inclusive = true }
             }
         }
     }
+    println("AuthState: $authState")
 
     Column(
         modifier = Modifier

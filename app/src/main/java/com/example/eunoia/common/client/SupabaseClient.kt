@@ -1,4 +1,4 @@
-package com.example.eunoia.common.di
+package com.example.eunoia.common.client
 
 import android.content.Context
 import com.example.eunoia.common.utils.PropHelper
@@ -13,9 +13,10 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import javax.inject.Singleton
 
+
 @Module
 @InstallIn(SingletonComponent::class)
-object SupabaseModule {
+object SupabaseClient {
 
     @Provides
     @Singleton
@@ -23,8 +24,8 @@ object SupabaseModule {
         val (supabaseUrl, supabaseApiKey) = PropHelper.getSupabaseKeys(context)
         return createSupabaseClient(supabaseUrl = supabaseUrl, supabaseKey = supabaseApiKey)
         {
-                this.install(Postgrest)
-                this.install(Auth)
+            this.install(Postgrest)
+            this.install(Auth)
         }
     }
 }

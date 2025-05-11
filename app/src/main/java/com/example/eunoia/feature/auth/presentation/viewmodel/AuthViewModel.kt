@@ -28,7 +28,8 @@ class AuthViewModel @Inject constructor(
             val session: AuthSession? = authRepository.getSession()
             println("Session: $session")
             _userState.value =
-                if (session != null && authRepository.getUserDetails(session.userId) != null) {
+                if (session != null && authRepository.doesSessionedUserExist()) {
+                    println("User is authenticated")
                     AuthState.Authenticated(session)
                 } else {
                     AuthState.Unauthenticated
