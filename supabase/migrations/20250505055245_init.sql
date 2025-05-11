@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS public.feedback (
   created_at timestamp with time zone DEFAULT now() NOT NULL,
   entry_id uuid,
   content text,
+  title text,
   CONSTRAINT feedback_pkey PRIMARY KEY (id),
   CONSTRAINT feedback_entry_id_fkey FOREIGN KEY (entry_id)
     REFERENCES public.entry (id) ON DELETE CASCADE

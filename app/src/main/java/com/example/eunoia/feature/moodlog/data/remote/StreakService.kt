@@ -39,4 +39,5 @@ class StreakService @Inject constructor(
             }
             .decodeSingleOrNull()
     }
+
 }

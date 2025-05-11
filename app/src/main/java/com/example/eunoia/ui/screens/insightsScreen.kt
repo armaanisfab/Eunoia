@@ -4,49 +4,85 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.eunoia.feature.feedback.presentation.ui.MarkdownPreview
+import com.example.eunoia.feature.feedback.presentation.viewmodel.FeedbackViewModel
+import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
+import com.example.eunoia.feature.profile.presentation.viewmodel.ProfileViewModel
 import com.example.eunoia.ui.components.GradientSubheadingText
 import com.example.eunoia.ui.components.HeadingText
-import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.VerticalSpacer
-import com.example.eunoia.ui.theme.ThemePurple1
-import com.example.eunoia.ui.theme.ThemePurple2
 import com.example.eunoia.ui.theme.ThemePurple3
-import com.example.eunoia.ui.theme.ThemePurple4
 import com.example.eunoia.ui.theme.space1
 import com.example.eunoia.ui.theme.space2
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun InsightsScreen(navController: NavController) {
+fun InsightsScreen(
+    navController: NavController,
+    journalViewModel: JournalViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    feedbackViewModel: FeedbackViewModel = hiltViewModel()
+) {
+    val profile by profileViewModel.profileState.collectAsState()
+    val userId = profile?.id
+    var kaboom by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = userId) {
+        if (userId != null) {
+            journalViewModel.fetchOrCreateUserJournal(userId)
+        }
+    }
+
+    val isJournalLoading by journalViewModel.isLoading.collectAsState()
+    val journalId = journalViewModel.journalState.collectAsState().value?.id
+    val journalEntries by journalViewModel.entriesState.collectAsState()
+
+    if (isJournalLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+
+    val entryIds = journalEntries.map { it.id }
+    feedbackViewModel.readAllFeedback(entryIds)
+    val allFeedback by feedbackViewModel.feedbackState.collectAsState()
+
+    println("All Feedback: $allFeedback")
+
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -74,23 +110,17 @@ fun InsightsScreen(navController: NavController) {
         }
 
         // Scrollable content: Middle section
-        item {
+        items(allFeedback) { feedback ->
             Column(
-                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(vertical = space2.dp),
+                verticalArrangement = Arrangement.Center
             ) {
-                GradientSubheadingText(text = "Embrace Your Happiness")
+                GradientSubheadingText(text = feedback.title)
                 VerticalSpacer(space = space2.dp)
-                NormalText(text = "It’s great to hear you’re feeling relaxed and calm today! Recognize and savor the happiness you're feeling—it's a powerful emotion that can help ground you amidst the stress. Take a moment to reflect on what’s bringing you joy, even if it’s something small. Practicing gratitude can amplify those positive feelings.")
-                VerticalSpacer(space = space2.dp)
-                GradientSubheadingText(text = "Address the Stress")
-                VerticalSpacer(space = space2.dp)
-                NormalText(text = "Identify the source of your stress and break it down into manageable parts. Is it a specific task, responsibility, or lingering worry? Once you pinpoint it, tackle what you can step-by-step. Remember, it’s okay to delegate or ask for help if you’re feeling overwhelmed—balancing joy and stress becomes easier when you’re not carrying the load alone.")
-                VerticalSpacer(space = space2.dp)
-                GradientSubheadingText(text = "Create Balance")
-                VerticalSpacer(space = space2.dp)
-                NormalText(text = "Find activities that let you ride the wave of your happiness while calming the stress. Deep breathing exercises, a short walk in nature, or even dancing to your favorite song can work wonders. Strive for moments of balance where you’re not suppressing your stress, but acknowledging it while fully embracing your joy. This harmony can create a powerful sense of well-being.")
+//                NormalText(text = feedback.content)
+                MarkdownPreview(feedback.content)
             }
         }
 

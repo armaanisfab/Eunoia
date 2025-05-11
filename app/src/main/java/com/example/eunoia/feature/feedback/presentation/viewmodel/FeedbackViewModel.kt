@@ -19,8 +19,8 @@ class FeedbackViewModel @Inject constructor(
     private val _submissionStatus = MutableStateFlow<Boolean?>(null)
     val submissionStatus: StateFlow<Boolean?> = _submissionStatus
 
-    private val _feedbackState = MutableStateFlow<Feedback?>(null)
-    val feedbackState: StateFlow<Feedback?> = _feedbackState
+    private val _feedbackState = MutableStateFlow<List<Feedback>>(emptyList())
+    val feedbackState: StateFlow<List<Feedback>> = _feedbackState
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -33,11 +33,22 @@ class FeedbackViewModel @Inject constructor(
         }
     }
 
+    fun readAllFeedback(entryIds: List<UUID>) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val feedbackList = feedbackRepository.readAllFeedback(entryIds)
+            _feedbackState.value = if (feedbackList.isNotEmpty()) feedbackList else emptyList()
+            _submissionStatus.value = true
+            _isLoading.value = false
+        }
+    }
+
     fun refreshFeedback(entryId: UUID) {
         viewModelScope.launch {
             _isLoading.value = true
-            _feedbackState.value = feedbackRepository.readFeedback(entryId)
-            _submissionStatus.value = _feedbackState.value != null
+            val feedback = feedbackRepository.readFeedback(entryId)
+            _feedbackState.value += if (feedback != null) listOf(feedback) else emptyList()
+            _submissionStatus.value = true
             _isLoading.value = false
         }
     }

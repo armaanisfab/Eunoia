@@ -37,8 +37,8 @@ class AuthRepository @Inject constructor(
 
     suspend fun doesSessionedUserExist(): Boolean {
         val session = sessionManager.getSession() ?: return false
-        val authUser = authService.getUserJwt(session.accessToken)
-        return UUID.fromString(authUser!!.id) == session.userId
+        val authUser = authService.getUserJwt(session.accessToken) ?: return false
+        return UUID.fromString(authUser.id) == session.userId
     }
 
     fun getSession(): AuthSession? {

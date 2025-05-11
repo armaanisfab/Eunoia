@@ -12,4 +12,8 @@ class FeedbackRepository @Inject constructor(private val feedbackService: Feedba
 
     suspend fun readFeedback(entryId: UUID): Feedback? =
         feedbackService.readFeedback(entryId)
+
+    suspend fun readAllFeedback(entryIds: List<UUID>): List<Feedback> {
+        return entryIds.mapNotNull { readFeedback(it) }
+    }
 }

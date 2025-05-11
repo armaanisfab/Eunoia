@@ -24,8 +24,8 @@ class MoodLogViewModel @Inject constructor(
     private val _moodLogsState = MutableStateFlow<List<MoodLog>>(emptyList())
     val moodLogsState: StateFlow<List<MoodLog>> = _moodLogsState
 
-    private val _streakState = MutableStateFlow<Streak?>(null)
-    val streakState: StateFlow<Streak?> = _streakState
+    private val _streakState = MutableStateFlow<List<Streak>>(emptyList())
+    val streakState: StateFlow<List<Streak>> = _streakState
 
     private val _errorState = MutableStateFlow("")
     val errorState: StateFlow<String> = _errorState
@@ -35,9 +35,14 @@ class MoodLogViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _moodLogsState.collect { moodLogs ->
-                moodLogs.lastOrNull()?.let { latestLog ->
-                    _streakState.value = streakRepository.fetchStreak(latestLog.id)
+            launch {
+                _moodLogsState.collect { logs ->
+                    _moodLogsState.value = logs.sortedBy { it.createdAt }
+                }
+            }
+            launch {
+                _streakState.collect { streaks ->
+                    _streakState.value = streaks.sortedBy { it.createdAt }
                 }
             }
         }
@@ -49,6 +54,18 @@ class MoodLogViewModel @Inject constructor(
             val logs = moodLogRepository.fetchMoodLogs(journalId)
                 .sortedBy { it.createdAt }
             _moodLogsState.value = logs
+            _isLoading.value = false
+        }
+    }
+
+    fun fetchStreaks(journalId: UUID) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val logs = moodLogRepository.fetchMoodLogs(journalId)
+                .sortedBy { it.createdAt }
+            val streaks = streakRepository.fetchStreaks(logs.map { it.id })
+                .sortedBy { it.createdAt }
+            _streakState.value = streaks
             _isLoading.value = false
         }
     }
@@ -86,12 +103,12 @@ class MoodLogViewModel @Inject constructor(
                     streakRepository.createStreak(Streak(moodId = createdLog.id, count = 1))
                 }
                 println("Updated streak: $updatedStreak")
-                _streakState.value = updatedStreak
+                _streakState.value += updatedStreak!!
             } else {
                 println("Creating new streak (broke the streak)")
                 val newStreak =
                     streakRepository.createStreak(Streak(moodId = createdLog.id, count = 1))
-                _streakState.value = newStreak
+                _streakState.value += newStreak!!
             }
             _isLoading.value = false
         }

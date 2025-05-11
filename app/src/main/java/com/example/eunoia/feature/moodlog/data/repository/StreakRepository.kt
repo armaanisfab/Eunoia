@@ -11,6 +11,11 @@ class StreakRepository @Inject constructor(
     suspend fun fetchStreak(moodLogId: UUID): Streak? =
         streakService.fetchStreak(moodLogId)
 
+    suspend fun fetchStreaks(moodLogIds: List<UUID>): List<Streak> {
+        println("Fetching streaks for mood log IDs: $moodLogIds")
+        return moodLogIds.mapNotNull { streakService.fetchStreak(it) }
+    }
+
     suspend fun createStreak(streak: Streak): Streak? =
         streakService.createStreak(streak)
 

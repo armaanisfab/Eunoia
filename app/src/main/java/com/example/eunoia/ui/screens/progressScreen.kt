@@ -18,8 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.eunoia.common.utils.ProgressStatsHelper.getHighestStreak
+import com.example.eunoia.common.utils.ProgressStatsHelper.getLatestStreak
+import com.example.eunoia.common.utils.ProgressStatsHelper.toChartEntries
 import com.example.eunoia.feature.journal.presentation.ui.JournalEntryList
 import com.example.eunoia.feature.journal.presentation.viewmodel.JournalViewModel
+import com.example.eunoia.feature.moodlog.presentation.viewmodel.MoodLogViewModel
 import com.example.eunoia.feature.profile.presentation.viewmodel.ProfileViewModel
 import com.example.eunoia.ui.components.HeadingText
 import com.example.eunoia.ui.components.SubheadingText
@@ -32,13 +36,13 @@ import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import com.patrykandpatrick.vico.core.entry.entryOf
 
 @Composable
 fun ProgressScreen(
     navController: NavController,
     journalViewModel: JournalViewModel = hiltViewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    moodLogViewModel: MoodLogViewModel = hiltViewModel()
 ) {
     val profile by profileViewModel.profileState.collectAsState()
     val userId = profile?.id
@@ -50,6 +54,7 @@ fun ProgressScreen(
     }
 
     val isJournalLoading by journalViewModel.isLoading.collectAsState()
+    val journalId = journalViewModel.journalState.collectAsState().value?.id
     val journalEntries by journalViewModel.entriesState.collectAsState()
 
     if (isJournalLoading) {
@@ -60,15 +65,20 @@ fun ProgressScreen(
             CircularProgressIndicator()
         }
     } else {
+        LaunchedEffect(journalId) {
+            if (journalId != null) {
+                moodLogViewModel.fetchStreaks(journalId)
+                moodLogViewModel.fetchMoodLogs(journalId)
+            }
+        }
+
+        val streaks by moodLogViewModel.streakState.collectAsState()
+        val moodLogs by moodLogViewModel.moodLogsState.collectAsState()
+        println("Collected ${streaks.size} streaks: $streaks")
+        println("Collected ${moodLogs.size} mood logs: $moodLogs")
+
         val chartEntryModelProducer = ChartEntryModelProducer(
-            listOf(
-                listOf(
-                    entryOf(0f, 3f),
-                    entryOf(1f, 4f),
-                    entryOf(2f, 2f),
-                    entryOf(3f, 5f)
-                )
-            )
+            (toChartEntries(moodLogs))
         )
 
         LazyColumn(
@@ -83,9 +93,9 @@ fun ProgressScreen(
             }
             item {
                 number_text_number_text(
-                    number1 = 5,
+                    number1 = getLatestStreak(streaks)?.count ?: 0,
                     text1 = "day streak",
-                    number2 = 9,
+                    number2 = getHighestStreak(streaks)?.count ?: 0,
                     text2 = "day high score",
                     onClick = { println("Card clicked!") }
                 )

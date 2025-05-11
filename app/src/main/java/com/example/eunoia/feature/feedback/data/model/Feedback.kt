@@ -11,4 +11,5 @@ data class Feedback(
     @Serializable(with = UUIDSerializer::class)
     @SerialName("entry_id") val entryId: UUID,
     val content: String,
+    val title: String,
 ) : BaseModel()
