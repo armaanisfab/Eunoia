@@ -65,6 +65,7 @@ class MoodLogViewModel @Inject constructor(
                 .sortedBy { it.createdAt }
             val streaks = streakRepository.fetchStreaks(logs.map { it.id })
                 .sortedBy { it.createdAt }
+            println("Fetched ${streaks.size} streaks: $streaks")
             _streakState.value = streaks
             _isLoading.value = false
         }

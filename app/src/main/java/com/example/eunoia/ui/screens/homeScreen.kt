@@ -48,6 +48,7 @@ fun HomeScreen(
 
     val isJournalLoading by journalViewModel.isLoading.collectAsState()
     val journalId = journalViewModel.journalState.collectAsState().value?.id
+    val journalEntries by journalViewModel.entriesState.collectAsState()
 
     if (isJournalLoading) {
         Box(
@@ -66,6 +67,10 @@ fun HomeScreen(
 
     val canSubmitMoodLog = remember(moodLogs) {
         moodLogs.lastOrNull()?.let { !it.createdAt.isToday() } ?: true
+    }
+
+    val canSubmitJournal = remember(journalEntries) {
+        journalEntries.lastOrNull()?.let { !it.createdAt.isToday() } ?: true
     }
 
     Column(
@@ -97,13 +102,15 @@ fun HomeScreen(
             VerticalSpacer(space = space2.dp)
         }
 
-        icon_heading_subheading(
-            heading = "Pen your journal",
-            subheading = "What's on your mind?",
-            iconResId = R.drawable.pen_icon,
-            onClick = { navController.navigate(Routes.Journal.route) }
-        )
-        VerticalSpacer(space = space2.dp)
+        if (canSubmitJournal) {
+            icon_heading_subheading(
+                heading = "Pen your journal",
+                subheading = "What's on your mind?",
+                iconResId = R.drawable.pen_icon,
+                onClick = { navController.navigate(Routes.Journal.route) }
+            )
+            VerticalSpacer(space = space2.dp)
+        }
         icon_heading_subheading(
             heading = "Explore personalized AI insights",
             subheading = "Advice from your wellness coach",

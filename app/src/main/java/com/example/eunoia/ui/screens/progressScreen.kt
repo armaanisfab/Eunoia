@@ -119,7 +119,7 @@ fun ProgressScreen(
             }
             item {
                 SubheadingText(text = "Your history")
-                VerticalSpacer(space = space1.dp)
+                VerticalSpacer(space = space2.dp)
             }
             item {
                 Box(

@@ -134,6 +134,7 @@ fun JournalScreen(
 //                        feedbackViewModel.submitJournalEntry(
 //                            journalViewModel.entriesState.value.last()
 //                        )
+                        navController.navigate(Routes.Home.route)
                     }
                 },
                 enabled = textFieldValue.isNotEmpty(), // Button becomes active when text is entered
